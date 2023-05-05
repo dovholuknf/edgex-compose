@@ -1,0 +1,7 @@
+curl http://core-data.edgex.ziti:80/api/v3/ping
+curl http://core-metadata.edgex.ziti:80/api/v3/ping
+curl http://core-command.edgex.ziti:80/api/v3/ping
+curl http://device-virtual.edgex.ziti:80/api/v3/ping
+curl http://rules-engine.edgex.ziti:80/api/v3/ping
+curl http://support-notifications.edgex.ziti:80/api/v3/ping
+curl http://support-scheduler.edgex.ziti:80/api/v3/ping
