@@ -61,7 +61,7 @@ makeEdgexService 'sys-mgmt-agent'
 
 ziti edge update identity edgex.device-virtual -a edgex.device-virtual-servers,edgex.core-command-clients,edgex.core-data-clients,edgex.core-metadata-clients,edgex.device-virtual-clients,edgex.rules-engine-clients,edgex.support-notifications-clients,edgex.support-scheduler-clients,edgex.sys-mgmt-agent-clients
 ziti edge update identity curlz -a edgex.rules-engine-servers,edgex.core-command-clients,edgex.core-data-clients,edgex.core-metadata-clients,edgex.device-virtual-clients,edgex.rules-engine-clients,edgex.support-notifications-clients,edgex.support-scheduler-clients,edgex.sys-mgmt-agent-clients
-
+ziti edge update identity edgex.rules-engine -x app-rules-engine
 
 echo " "
 echo "ext-jwt-id     : ${ext_jwt_id}"
