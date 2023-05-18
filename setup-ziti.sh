@@ -28,6 +28,8 @@ kc_auth_policy=$(ziti edge create auth-policy "${auth_policy_name}" \
   --primary-ext-jwt-allowed-signers "${ext_jwt_id}")
 
 ziti edge create identity service 'core-command-client' -o core-command-client.jwt
+ziti edge create identity service 'ekuiper.identity' -o ekuiper.identity.jwt -a "edgex.core-command-clients,edgex.core-data-clients,edgex.core-metadata-clients,edgex.device-virtual-clients,edgex.rules-engine-clients,edgex.support-notifications-clients,edgex.support-scheduler-clients,edgex.sys-mgmt-agent-clients,edgex.ekuiper-clients,edgex.ekuiper-servers"
+
 ziti edge create identity user curlz -o curlz.jwt
 
 function deleteEdgexService {
@@ -58,10 +60,15 @@ makeEdgexService 'rules-engine'
 makeEdgexService 'support-notifications'
 makeEdgexService 'support-scheduler'
 makeEdgexService 'sys-mgmt-agent'
+makeEdgexService 'ui'
+makeEdgexService 'ekuiper'
 
 ziti edge update identity edgex.device-virtual -a edgex.device-virtual-servers,edgex.core-command-clients,edgex.core-data-clients,edgex.core-metadata-clients,edgex.device-virtual-clients,edgex.rules-engine-clients,edgex.support-notifications-clients,edgex.support-scheduler-clients,edgex.sys-mgmt-agent-clients
-ziti edge update identity curlz -a edgex.rules-engine-servers,edgex.core-command-clients,edgex.core-data-clients,edgex.core-metadata-clients,edgex.device-virtual-clients,edgex.rules-engine-clients,edgex.support-notifications-clients,edgex.support-scheduler-clients,edgex.sys-mgmt-agent-clients
-ziti edge update identity edgex.rules-engine -x app-rules-engine
+ziti edge update identity curlz -a edgex.rules-engine-servers,edgex.core-command-clients,edgex.core-data-clients,edgex.core-metadata-clients,edgex.device-virtual-clients,edgex.rules-engine-clients,edgex.support-notifications-clients,edgex.support-scheduler-clients,edgex.sys-mgmt-agent-clients,edgex.ui-servers,edgex.ekuiper-clients,edgex.ekuiper-servers,edgex.ui-clients
+ziti edge update identity edgex.rules-engine --external-id app-rules-engine
+
+ziti edge delete identity 'ekuiper.identity'
+ziti edge create identity service 'ekuiper.identity' -o ekuiper.identity.jwt -a "edgex.core-command-clients,edgex.core-data-clients,edgex.core-metadata-clients,edgex.device-virtual-clients,edgex.rules-engine-clients,edgex.support-notifications-clients,edgex.support-scheduler-clients,edgex.sys-mgmt-agent-clients,edgex.ekuiper-clients,edgex.ekuiper-servers"
 
 echo " "
 echo "ext-jwt-id     : ${ext_jwt_id}"

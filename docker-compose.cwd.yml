@@ -70,7 +70,6 @@ services:
       edgex-network: null
     ports:
     - mode: ingress
-      host_ip: 127.0.0.1
       target: 8500
       published: "8500"
       protocol: tcp
