@@ -20,15 +20,21 @@ docker exec -ti edgex-security-proxy-setup ./secrets-config proxy deluser --user
 
 # Create new user, log in, and exchange for JWT
 password=$(docker exec -ti edgex-security-proxy-setup ./secrets-config proxy adduser --user "${username}" --useRootToken | jq -r '.password')
-vault_token=$(curl -ks "http://localhost:8200/v1/auth/userpass/login/${username}" -d "{\"password\":\"${password}\"}" | jq -r '.auth.client_token')
+vault_auth=$(curl -ks "http://localhost:8200/v1/auth/userpass/login/${username}" -d "{\"password\":\"${password}\"}")
+vault_token=$(echo $vault_auth | jq -r '.auth.client_token')
 id_token=$(curl -ks -H "Authorization: Bearer ${vault_token}" "http://localhost:8200/v1/identity/oidc/token/${username}" | jq -r '.data.token')
 
 # Check that we got sane output from the previous commands before coughing up the token
 introspect_result=$(curl -ks -H "Authorization: Bearer ${vault_token}" "http://localhost:8200/v1/identity/oidc/introspect" -d "{\"token\":\"${id_token}\"}" | jq -r '.active')
 if [ "${introspect_result}" = "true" ]; then
 	echo "${id_token}"
-	exit 0
+	if [ "$1" = "noexit" ]; then
+		exit 0
+	fi
 else
 	echo "ERROR" >&2
-	exit 1
+	if [ "$1" = "noexit" ]; then
+		exit 1
+	fi
 fi
+
