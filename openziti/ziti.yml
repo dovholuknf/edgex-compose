@@ -1,0 +1,52 @@
+services:
+  openziti:
+    container_name: edgex-openziti
+    image: openziti/ziti-cli:release-next
+    restart: unless-stopped
+    networks:
+      edgex-network:
+        aliases:
+          - openziti
+          - ziti-controller
+          - ziti-edge-controller
+          - ziti-router
+    entrypoint:
+    - bash
+    - -euc
+    - |
+      ZITI_CMD+=" --ctrl-address ${EXTERNAL_DNS:-openziti}"\
+      " --ctrl-port ${ZITI_CTRL_EDGE_ADVERTISED_PORT:-1280}"\
+      " --router-address ${EXTERNAL_DNS:-openziti}"\
+      " --router-port ${ZITI_ROUTER_PORT:-3022}"\
+      " --password ${ZITI_PWD:-admin}"
+      exec ziti "$${@}" $${ZITI_CMD}
+    command: -- edge quickstart --home /persistent
+    user: ${ZIGGY_UID:-1000}
+    environment:
+      HOME: /persistent
+      PFXLOG_NO_JSON: "${PFXLOG_NO_JSON:-true}"
+    volumes:
+    - persistent:/persistent
+    ports:
+    - ${ZITI_INTERFACE:-0.0.0.0}:${ZITI_CTRL_EDGE_ADVERTISED_PORT:-1280}:${ZITI_CTRL_EDGE_ADVERTISED_PORT:-1280}
+    - ${ZITI_INTERFACE:-0.0.0.0}:${ZITI_ROUTER_PORT:-3022}:${ZITI_ROUTER_PORT:-3022}
+    depends_on:
+      openziti-initialize:
+        condition: service_completed_successfully
+  openziti-initialize:
+    container_name: edgex-openziti-initialize
+    image: busybox
+    command: chown -Rc ${ZIGGY_UID:-1000} /persistent
+    user: root
+    environment:
+      HOME: /persistent
+      PFXLOG_NO_JSON: "true"
+    volumes:
+    - persistent:/persistent
+networks:
+  edgex-network:
+    name: edgex_edgex-network
+    driver: bridge
+volumes:
+  persistent:
+    driver: local

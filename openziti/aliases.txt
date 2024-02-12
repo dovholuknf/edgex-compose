@@ -1,0 +1,4 @@
+alias sex='docker compose -f ~/git/github/dovholuknf/edgex/edgex-compose/docker-compose-cwd.yml --project-name secure-edgex'
+alias sextoken='~/git/github/dovholuknf/edgex/edgex-compose/compose-builder/get-api-gateway-token.sh'
+alias dcps='docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}"'
+
