@@ -2,6 +2,7 @@
 set -e
 
 docker compose -f docker-compose.yml --project-name edgex down -v
+rm -rf /tmp/edgex/secrets
 docker compose -f docker-compose.yml --project-name edgex up -d
 
 #docker compose -f docker-compose.yml --project-name edgex stop core-command
@@ -24,17 +25,17 @@ docker compose -f openziti/ziti.yml --project-name edgex cp openziti/setup-ziti.
 docker compose -f openziti/ziti.yml --project-name edgex exec -it openziti bash -c ./setup-ziti.sh
 sudo chmod 777 -R /tmp/edgex/secrets
 
-mkdir -p /tmp/edgex/secrets/ui/
+#mkdir -p /tmp/edgex/secrets/ui/
+#
+#tokenFile="/tmp/edgex/secrets/ui/secrets-token.json"
+#while [ ! -s "$tokenFile" ]; do
+#    echo "File is empty. Waiting for contents..."
+#    sleep 1  # You can adjust the sleep duration based on your needs
+#    echo NO MAKE TOKEN #make get-token > $tokenFile
+#done
 
-tokenFile="/tmp/edgex/secrets/ui/secrets-token.json"
-while [ ! -s "$tokenFile" ]; do
-    echo "File is empty. Waiting for contents..."
-    sleep 1  # You can adjust the sleep duration based on your needs
-    make get-token > $tokenFile
-done
 
-
-docker compose -f docker-compose.yml logs -f
+docker compose -f docker-compose.yml --project-name edgex logs -f
 
 
 
