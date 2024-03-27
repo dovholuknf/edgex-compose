@@ -23,7 +23,7 @@
 include .env
 include common-security.env
 
-# This tool now only supports compose V2, aka "docker compose" as it has replaced to old docker-compose tool.
+# This tool now only supports comspose V2, aka "docker compose" as it has replaced to old docker-compose tool.
 DOCKER_COMPOSE=docker compose
 GEN_COMMAND=convert
 
@@ -300,7 +300,7 @@ ifeq (ds-rest, $(filter ds-rest,$(ARGS)))
 		ifeq ($(KNOWN_SECRETS_LIST),)
 			KNOWN_SECRETS_LIST:=redisdb[device-rest],message-bus[device-rest]
 		else
-			KNOWN_SECRETS_LIST:=$(KNOWN_SECRETS_LIST),redisdb[device-rest],message-bus[device-rest]
+			KNOWN_SECRETS_LIST:=$(KNOWN_SECRETS_LIST),redisdb[device-rest],message		-bus[device-rest]
 		endif
 		PROXY_ROUTE:=device-rest.http://edgex-device-rest:59986
 		ifeq ($(EXTRA_PROXY_ROUTE_LIST),)
@@ -792,10 +792,15 @@ endif
 ifeq (no-secty, $(filter no-secty,$(ARGS)))
 	NO_SECURITY:=-no-secty
 else
-# add zero trust here xxxxx
-#	COMPOSE_FILES:=$(COMPOSE_FILES) -f add-security.yml
+	COMPOSE_FILES:=$(COMPOSE_FILES) -f add-security.yml
 	ifeq ($(BUS),) # if BUS not set, then we are using secure redis messagebus by default
-#		COMPOSE_FILES:=$(COMPOSE_FILES) -f add-secure-redis-messagebus.yml
+		COMPOSE_FILES:=$(COMPOSE_FILES) -f add-secure-redis-messagebus.yml
+	endif
+	# Add Security Ports
+	ifeq (zero-trust, $(filter zero-trust,$(ARGS)))
+#		COMPOSE_FILES:=$(COMPOSE_FILES) -f add-openziti.yml
+	else
+		COMPOSE_FILES:=$(COMPOSE_FILES) -f add-security-reverse-proxy.yml -f add-security-ports.yml
 	endif
 endif
 
@@ -1033,11 +1038,15 @@ run: gen
 pull: gen
 	${DOCKER_COMPOSE}  pull $(SERVICES)
 
-zt:
+zt1:
 	echo $(COMPOSE_FILES)
-	${DOCKER_COMPOSE}  -p edgex $(COMPOSE_FILES) ${GEN_COMMAND} > zt-docker-compose.yml
+	${DOCKER_COMPOSE}  -p edgex $(COMPOSE_FILES) ${GEN_COMMAND} > zt-docker-compose1.yml
+zt2:
+	echo $(COMPOSE_FILES)
+	${DOCKER_COMPOSE}  -p edgex $(COMPOSE_FILES) ${GEN_COMMAND} > zt-docker-compose2.yml
 
 gen:
+	echo $(COMPOSE_FILES)
 	echo MQTT_VERBOSE=${MQTT_VERBOSE}
 	${DOCKER_COMPOSE}  -p edgex $(COMPOSE_FILES) ${GEN_COMMAND} > docker-compose.yml
 	rm -rf ./$(GEN_EXT_DIR)
