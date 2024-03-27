@@ -27,7 +27,7 @@ include common-security.env
 DOCKER_COMPOSE=docker compose
 GEN_COMMAND=convert
 
-COMPOSE_FILES:=-f docker-compose-base.yml
+COMPOSE_FILES:=-f docker-compose-base.yml 
 TOKEN_LIST=
 KNOWN_SECRETS_LIST=redisdb[app-rules-engine]
 EXTRA_PROXY_ROUTE_LIST=
@@ -781,13 +781,21 @@ ifeq (nats-bus, $(filter nats-bus,$(ARGS)))
 	BUS:=-nats-bus
 endif
 
+# Add Ports
+ifeq (zero-trust, $(filter zero-trust,$(ARGS)))
+	COMPOSE_FILES:=$(COMPOSE_FILES) -f add-openziti.yml
+else
+	COMPOSE_FILES:=$(COMPOSE_FILES) -f add-docker-compose-base-ports.yml
+endif
+
 # Add Security services and settings
 ifeq (no-secty, $(filter no-secty,$(ARGS)))
 	NO_SECURITY:=-no-secty
 else
-	COMPOSE_FILES:=$(COMPOSE_FILES) -f add-security.yml
+# add zero trust here xxxxx
+#	COMPOSE_FILES:=$(COMPOSE_FILES) -f add-security.yml
 	ifeq ($(BUS),) # if BUS not set, then we are using secure redis messagebus by default
-		COMPOSE_FILES:=$(COMPOSE_FILES) -f add-secure-redis-messagebus.yml
+#		COMPOSE_FILES:=$(COMPOSE_FILES) -f add-secure-redis-messagebus.yml
 	endif
 endif
 
@@ -1024,6 +1032,10 @@ run: gen
 
 pull: gen
 	${DOCKER_COMPOSE}  pull $(SERVICES)
+
+zt:
+	echo $(COMPOSE_FILES)
+	${DOCKER_COMPOSE}  -p edgex $(COMPOSE_FILES) ${GEN_COMMAND} > zt-docker-compose.yml
 
 gen:
 	echo MQTT_VERBOSE=${MQTT_VERBOSE}
