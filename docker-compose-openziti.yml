@@ -1,7 +1,7 @@
 services:
   openziti:
     container_name: edgex-openziti
-    image: openziti/ziti-cli:0.34.1
+    image: openziti/ziti-cli:1.0.0
     restart: unless-stopped
     networks:
       edgex-network:
