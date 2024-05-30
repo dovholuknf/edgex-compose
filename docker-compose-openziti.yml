@@ -6,6 +6,7 @@ services:
     networks:
       edgex-network:
         aliases:
+          - sg4u22wsl.parkplace-via-dhcp
           - openziti
           - ziti-controller
           - ziti-edge-controller

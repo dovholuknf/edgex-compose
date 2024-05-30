@@ -1211,8 +1211,14 @@ services:
         source: vault-logs
         target: /vault/logs
         volume: {}
-        
-        
+
+
+
+
+
+
+
+
 networks:
   edgex-network:
     name: edgex_edgex-network
