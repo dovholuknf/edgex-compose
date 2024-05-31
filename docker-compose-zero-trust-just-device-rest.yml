@@ -27,30 +27,38 @@
 # Generated with: Docker Compose version v2.25.0
 name: edgex
 services:
-  
-  device-virtual:
+
+  device-rest:
     env_file:
       - .env
     command:
-      - /device-virtual
+      - /device-rest
       - -cp=consul.http://edgex-core-consul:8500
       - --registry
-    container_name: edgex-device-virtual
+    container_name: edgex-device-rest
 #    depends_on:
+#      consul:
+#        condition: service_started
+#        required: true
+#      core-common-config-bootstrapper:
+#        condition: service_started
+#        required: true
 #      core-data:
 #        condition: service_started
 #        required: true
 #      core-metadata:
 #        condition: service_started
 #        required: true
+#      security-bootstrapper:
+#        condition: service_started
+#        required: true
     entrypoint:
       - /edgex-init/ready_to_run_wait_install.sh
     environment:
-      WRITABLE_LOGLEVEL: DEBUG
       EDGEX_SECURITY_SECRET_STORE: "true"
       PROXY_SETUP_HOST: edgex-security-proxy-setup
       SECRETSTORE_HOST: edgex-vault
-      SERVICE_HOST: device-virtual.edgex.ziti
+      SERVICE_HOST: device-rest.edgex.ziti
       SERVICE_PORT: "80"
       STAGEGATE_BOOTSTRAPPER_HOST: edgex-security-bootstrapper
       STAGEGATE_BOOTSTRAPPER_STARTPORT: "54321"
@@ -65,9 +73,9 @@ services:
       STAGEGATE_SECRETSTORESETUP_HOST: edgex-security-secretstore-setup
       STAGEGATE_SECRETSTORESETUP_TOKENS_READYPORT: "54322"
       STAGEGATE_WAITFOR_TIMEOUT: 60s
-    hostname: edgex-device-virtual
-    #image: nexus3.edgexfoundry.org:10004/device-virtual:latest
-    image: edgexfoundry/device-virtual:0.0.0-dev
+    hostname: edgex-device-rest
+    #image: nexus3.edgexfoundry.org:10004/device-rest:latest
+    image: edgexfoundry/device-rest:0.0.0-dev
     networks:
       edgex-network: null
     read_only: true
@@ -86,10 +94,10 @@ services:
         source: edgex-init
         target: /edgex-init
         read_only: true
-        volume: { }
+        volume: {}
       - type: bind
-        source: /tmp/edgex/secrets/device-virtual
-        target: /tmp/edgex/secrets/device-virtual
+        source: /tmp/edgex/secrets/device-rest
+        target: /tmp/edgex/secrets/device-rest
         read_only: true
         bind:
           selinux: z
