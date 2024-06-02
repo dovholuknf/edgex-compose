@@ -9,7 +9,7 @@ services:
     environment:
       SERVICE_HOST: core-command.edgex.ziti
       SERVICE_PORT: 80
-      CLIENTS_CORE_METADATA_HOST: "core-metadata.edgex.ziti"
+      CLIENTS_CORE_METADATA_HOST: core-metadata.edgex.ziti
       CLIENTS_CORE_METADATA_PORT: 80
       CLIENTS_CORE_METADATA_SECURITYOPTIONS_MODE: "zerotrust"
     ports: !reset null
@@ -38,7 +38,7 @@ services:
       EDGEX_CREDENTIAL_NAME: rules-engine
       EDGEX_CREDENTIALS: /tmp/edgex/secrets/rules-engine/secrets-token.json
       KUIPER__BASIC__ENABLEOPENZITI: true
-      OPENZITI_CONTROLLER: openziti:1280
+      OPENZITI_CONTROLLER: ${OPENZITI_ADVERTISED_ADDRESS_PORT:-openziti:1280}
     ports: !reset null
     volumes:
       - edgex-init:/edgex-init
