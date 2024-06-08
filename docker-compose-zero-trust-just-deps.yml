@@ -1214,7 +1214,57 @@ services:
         target: /vault/logs
         volume: {}
         
+
+
         
+  openziti-underlay-proxy:
+    container_name: edgex-underlay-proxy
+    image: ghcr.io/openziti-test-kitchen/healthcheck-proxy/healthcheck-proxy:latest
+    environment:
+      HOME: /edgex_openziti
+      OPENZITI_HEALTHCHECK_ALLOWED_PATH: '^.*/ping$'
+      OPENZITI_HEALTHCHECK_SEARCH_REGEX: '(.*).edgex.ziti'
+      OPENZITI_HEALTHCHECK_REPLACE_REGEX: 'edgex.$1'
+      OPENZITI_HEALTHCHECK_PROXY_PORT: 80
+      OPENZITI_HEALTHCHECK_IDENTITY: /edgex_openziti/healthcheck.json
+    volumes:
+      - edgex_openziti:/edgex_openziti
+    command: >
+      sh -c "
+      while [ ! -f /edgex_openziti/healthcheck.json ]; do
+        sleep 1
+        echo 'waiting for /edgex_openziti/healthcheck.json...'
+      done &&
+      /app/zerotrust-healthcheck"
+    restart: unless-stopped
+    networks:
+      edgex-network:
+        aliases:
+          - app-external-mqtt-trigger.edgex.ziti
+          - app-http-export.edgex.ziti
+          - app-metrics-influxdb.edgex.ziti
+          - app-mqtt-export.edgex.ziti
+          - app-rfid-llrp-inventory.edgex.ziti
+          - app-rules-engine.edgex.ziti
+          - app-sample.edgex.ziti
+          - core-command.edgex.ziti
+          - core-data.edgex.ziti
+          - core-metadata.edgex.ziti
+          - rules-engine.edgex.ziti
+          - support-notifications.edgex.ziti
+          - support-scheduler.edgex.ziti
+          - device-bacnet-ip.edgex.ziti
+          - device-coap.edgex.ziti
+          - device-gpio.edgex.ziti
+          - device-modbus.edgex.ziti
+          - device-mqtt.edgex.ziti
+          - device-onvif-camera.edgex.ziti
+          - device-rest.edgex.ziti
+          - device-rfid-llrp.edgex.ziti
+          - device-snmp.edgex.ziti
+          - device-uart.edgex.ziti
+          - device-usb-camera.edgex.ziti
+          - device-virtual.edgex.ziti
 networks:
   edgex-network:
     name: edgex_edgex-network
@@ -1230,6 +1280,8 @@ volumes:
     name: edgex_db-data
   edgex-init:
     name: edgex_edgex-init
+  edgex_openziti:
+    driver: local
   kuiper-connections:
     name: edgex_kuiper-connections
   kuiper-data:
