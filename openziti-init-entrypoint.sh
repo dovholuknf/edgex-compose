@@ -24,6 +24,11 @@ ziti edge delete service-policy where 'name contains "edgex." limit none'
 ziti edge delete service where 'name contains "edgex." limit none'
 ziti edge delete config where 'name contains "edgex." limit none'
 
+ziti edge delete identity where 'name contains "edgex-healthcheck" limit none'
+ziti edge delete service-policy where 'name contains "edgex-healthcheck" limit none'
+ziti edge delete service where 'name contains "edgex-healthcheck" limit none'
+ziti edge delete config where 'name contains "edgex-healthcheck" limit none'
+
 ziti edge delete auth-policy where 'name contains "'"${auth_policy_name}"'" limit none'
 ziti edge delete ext-jwt-signer where 'name contains "'"${ext_signer_name}"'" limit none'
 
@@ -111,7 +116,7 @@ ziti edge create service-policy edgex-healthcheck-support-dial Dial --identity-r
 ziti edge create service-policy edgex-healthcheck-device-dial Dial --identity-roles "#edgex-healthchecker" --service-roles "#device.svc"
 ziti edge create service-policy edgex-healthcheck-application-dial Dial --identity-roles "#edgex-healthchecker" --service-roles "#application.svc"
 
-ziti edge create service-policy edgex-ui-support-dial Dial --identity-roles "#edgex.ui.server" --service-roles "#support.svc"
+ziti edge create service-policy edgex.ui-support-dial Dial --identity-roles "#edgex.ui.server" --service-roles "#support.svc"
 
 ziti edge enroll "${OPENZITI_PERSISTENCE_PATH}/healthcheck.jwt"
 

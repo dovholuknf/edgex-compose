@@ -1232,7 +1232,7 @@ services:
     command: >
       sh -c "
       while [ ! -f /edgex_openziti/healthcheck.json ]; do
-        sleep 1
+        sleep 5
         echo 'waiting for /edgex_openziti/healthcheck.json...'
       done &&
       /app/zerotrust-healthcheck"
@@ -1265,6 +1265,28 @@ services:
           - device-uart.edgex.ziti
           - device-usb-camera.edgex.ziti
           - device-virtual.edgex.ziti
+            
+  openziti-router:
+    container_name: edgex-openziti-router
+    image: openziti/ziti-cli:1.0.0
+    env_file:
+      - .env
+    environment:
+      PFXLOG_NO_JSON: "${PFXLOG_NO_JSON:-true}"
+    entrypoint: /openziti-router-entrypoint.sh
+    command: run "\${HOME}/\${OPENZITI_EDGE_ROUTER_NAME}.yml"
+    volumes:
+      - edgex_openziti:/edgex_openziti
+      - $PWD/openziti-router-entrypoint.sh:/openziti-router-entrypoint.sh
+#    ports:
+#      - ${ZITI_INTERFACE:-0.0.0.0}:${OPENZITI_ADVERTISED_PORT:-1280}:${OPENZITI_ADVERTISED_PORT:-1280}
+#      - ${ZITI_INTERFACE:-0.0.0.0}:${ZITI_ROUTER_PORT:-3022}:${ZITI_ROUTER_PORT:-3022}
+    restart: unless-stopped
+    networks:
+      edgex-network:
+
+
+    
 networks:
   edgex-network:
     name: edgex_edgex-network
