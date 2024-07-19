@@ -1,0 +1,167 @@
+#  * Copyright 2024 Intel Corporation.
+#  *
+#  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+#  * in compliance with the License. You may obtain a copy of the License at
+#  *
+#  * http://www.apache.org/licenses/LICENSE-2.0
+#  *
+#  * Unless required by applicable law or agreed to in writing, software distributed under the License
+#  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+#  * or implied. See the License for the specific language governing permissions and limitations under
+#  * the License.
+#  *
+#  * EdgeX Foundry, Odessa WIP release
+#  *******************************************************************************/
+#
+#
+#
+# ************************ This is a generated compose file ****************************
+#
+# DO NOT MAKE CHANGES that are intended to be permanent to EdgeX edgex-compose repo.
+#
+# Permanent changes can be made to the source compose files located in the compose-builder folder
+# at the top level of the edgex-compose repo.
+#
+# From the compose-builder folder use `make build` to regenerate all standard compose files variations
+#
+# Generated with: Docker Compose version v2.25.0
+name: edgex
+services:
+  
+  rules-engine:
+    env_file:
+      - .env
+    container_name: edgex-kuiper
+    #    depends_on:
+    #      database:
+    #        condition: service_started
+    #        required: true
+    #      security-bootstrapper:
+    #        condition: service_started
+    #        required: true
+    #      security-secretstore-setup:
+    #        condition: service_started
+    #        required: true
+    entrypoint:
+      - /edgex-init/kuiper_wait_install.sh
+    environment:
+      CONNECTION__EDGEX__REDISMSGBUS__PORT: "6379"
+      CONNECTION__EDGEX__REDISMSGBUS__PROTOCOL: redis
+      CONNECTION__EDGEX__REDISMSGBUS__SERVER: edgex-redis
+      CONNECTION__EDGEX__REDISMSGBUS__TYPE: redis
+      EDGEX__DEFAULT__PORT: "6379"
+      EDGEX__DEFAULT__PROTOCOL: redis
+      EDGEX__DEFAULT__SERVER: edgex-redis
+      EDGEX__DEFAULT__TOPIC: edgex/rules-events
+      EDGEX__DEFAULT__TYPE: redis
+      EDGEX_CREDENTIAL_NAME: rules-engine
+      EDGEX_CREDENTIALS: /tmp/edgex/secrets/rules-engine/secrets-token.json
+      KUIPER__BASIC__CONSOLELOG: "true"
+      KUIPER__BASIC__ENABLEOPENZITI: "true"
+      KUIPER__BASIC__RESTPORT: "59720"
+      OPENZITI_CONTROLLER: ${OPENZITI_ADVERTISED_ADDRESS_PORT:-openzitig:1390}
+      PROXY_SETUP_HOST: edgex-security-proxy-setup
+      STAGEGATE_BOOTSTRAPPER_HOST: edgex-security-bootstrapper
+      STAGEGATE_BOOTSTRAPPER_STARTPORT: "54321"
+      STAGEGATE_DATABASE_HOST: edgex-redis
+      STAGEGATE_DATABASE_PORT: "6379"
+      STAGEGATE_DATABASE_READYPORT: "6379"
+      STAGEGATE_PROXYSETUP_READYPORT: "54325"
+      STAGEGATE_READY_TORUNPORT: "54329"
+      STAGEGATE_REGISTRY_HOST: edgex-core-consul
+      STAGEGATE_REGISTRY_PORT: "8500"
+      STAGEGATE_REGISTRY_READYPORT: "54324"
+      STAGEGATE_SECRETSTORESETUP_HOST: edgex-security-secretstore-setup
+      STAGEGATE_SECRETSTORESETUP_TOKENS_READYPORT: "54322"
+      STAGEGATE_WAITFOR_TIMEOUT: 60s
+    hostname: edgex-kuiper
+    image: lfedge/ekuiper:v1.14.0
+    networks:
+      edgex-network: null
+    read_only: true
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    user: kuiper:kuiper
+    #user: 2002:2001
+    volumes:
+      - type: bind
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: volume
+        source: kuiper-data
+        target: /kuiper/data
+        volume: { }
+      - type: volume
+        source: kuiper-etc
+        target: /kuiper/etc
+        volume: { }
+      - type: volume
+        source: kuiper-log
+        target: /kuiper/log
+        volume: { }
+      - type: volume
+        source: kuiper-plugins
+        target: /kuiper/plugins
+        volume: { }
+      - type: volume
+        source: kuiper-sources
+        target: /kuiper/etc/sources
+        volume: { }
+      - type: volume
+        source: kuiper-connections
+        target: /kuiper/etc/connections
+        volume: { }
+      - type: volume
+        source: edgex-init
+        target: /edgex-init
+        volume: { }
+      - type: bind
+        source: /tmp/edgex/secrets/rules-engine
+        target: /tmp/edgex/secrets/rules-engine
+        read_only: true
+        bind:
+          selinux: z
+          create_host_path: true
+          
+  
+  
+  
+networks:
+  edgex-network:
+    name: edgex_edgex-network
+    driver: bridge
+volumes:
+  consul-acl-token:
+    name: edgex_consul-acl-token
+  consul-config:
+    name: edgex_consul-config
+  consul-data:
+    name: edgex_consul-data
+  db-data:
+    name: edgex_db-data
+  edgex-init:
+    name: edgex_edgex-init
+  kuiper-connections:
+    name: edgex_kuiper-connections
+  kuiper-data:
+    name: edgex_kuiper-data
+  kuiper-etc:
+    name: edgex_kuiper-etc
+  kuiper-log:
+    name: edgex_kuiper-log
+  kuiper-plugins:
+    name: edgex_kuiper-plugins
+  kuiper-sources:
+    name: edgex_kuiper-sources
+  redis-config:
+    name: edgex_redis-config
+  vault-config:
+    name: edgex_vault-config
+  vault-file:
+    name: edgex_vault-file
+  vault-logs:
+    name: edgex_vault-logs

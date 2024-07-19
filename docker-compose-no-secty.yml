@@ -360,7 +360,7 @@ services:
       KUIPER__BASIC__ENABLEOPENZITI: "false"
       KUIPER__BASIC__RESTPORT: "59720"
     hostname: edgex-kuiper
-    image: lfedge/ekuiper:v1.14.0-alpha.2
+    image: lfedge/ekuiper:v1.14.0
     networks:
       edgex-network: null
     ports:

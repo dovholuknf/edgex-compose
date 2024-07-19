@@ -1,4 +1,4 @@
-FROM openziti/ziti-cli:0.33.1
+FROM openziti/ziti-cli:1.1.4
 
 COPY ./openziti-init-entrypoint.sh /entrypoint.sh
 
