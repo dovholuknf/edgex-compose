@@ -1,11 +1,12 @@
 services:
   openziti:
     container_name: edgex-openziti
-    image: openziti/ziti-cli:0.34.1
+    image: openziti/ziti-cli:1.1.4
     restart: unless-stopped
     networks:
       edgex-network:
         aliases:
+          - sg4u22wsl.parkplace-via-dhcp
           - openziti
           - ziti-controller
           - ziti-edge-controller

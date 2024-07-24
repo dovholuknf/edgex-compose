@@ -73,7 +73,7 @@ pull:
 	${DOCKER_COMPOSE} -f docker-compose${NO_SECURITY}${ZERO_TRUST_OPTION}${ARM64}.yml pull ${SERVICES}
 
 run:
-	${DOCKER_COMPOSE} -p edgex -f docker-compose${NO_SECURITY}${APP_SAMPLE}${ZERO_TRUST_OPTION}${ARM64}.yml up -d ${SERVICES}
+	${DOCKER_COMPOSE} -p edgex -f docker-compose${NO_SECURITY}${APP_SAMPLE}${ZERO_TRUST_OPTION}${ARM64}.yml up ${SERVICES}
 
 down:
 	$(COMPOSE_DOWN)
