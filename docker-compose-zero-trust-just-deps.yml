@@ -1279,7 +1279,6 @@ services:
       - edgex_openziti:/edgex_openziti
       - $PWD/openziti-router-entrypoint.sh:/openziti-router-entrypoint.sh
 #    ports:
-#      - ${ZITI_INTERFACE:-0.0.0.0}:${OPENZITI_ADVERTISED_PORT:-1280}:${OPENZITI_ADVERTISED_PORT:-1280}
 #      - ${ZITI_INTERFACE:-0.0.0.0}:${ZITI_ROUTER_PORT:-3022}:${ZITI_ROUTER_PORT:-3022}
     restart: unless-stopped
     networks:

@@ -6,31 +6,37 @@ fi
 
 # should be user settable through docker-compose/env/env vars
 openziti_server_and_port="${OPENZITI_ADVERTISED_ADDRESS}:${OPENZITI_ADVERTISED_PORT}"
-oidc_server=${OPENZITI_OIDC_URL:-"http://vault:8200"}
-ext_signer_name=${OPENZITI_EXT_SIGNER_NAME:-"edgex-vault.clients"}
+oidc_server=${OPENZITI_OIDC_URL:-"http://edgex-vault:8200"}
+ext_signer_name=${OPENZITI_EXT_SIGNER_NAME:-"edgex.token-provider.clients"}
 auth_policy_name=${OPENZITI_AUTH_POLICY_NAME:-"${ext_signer_name}.auth.policy"}
 iss=${OPENZITI_JWT_ISSUER:-"/v1/identity/oidc"}
 jwks=${OPENZITI_JWT_JWKS_URL:-"${oidc_server}/v1/identity/oidc/.well-known/keys"}
 aud=${OPENZITI_JWT_AUD:-"edgex"}
-claim=${OPENZITI_JWT_CLAIM:-"name"}
+claim=${OPENZITI_JWT_CLAIM:-"name"} 
 
 
 while [[ "$(curl -w "%{http_code}" -m 1 -s -k -o /dev/null "https://${openziti_server_and_port}/version")" != "200" ]]; do echo "waiting for https://${openziti_server_and_port}"; sleep 3; done; echo "controller online"
 ziti edge login "${openziti_server_and_port}" -u "$ZITI_USER" -p "$ZITI_PWD" -y
 
-echo "CLEANUP: removing any previous configuration"
-ziti edge delete identity where 'name contains "edgex." limit none'
-ziti edge delete service-policy where 'name contains "edgex." limit none'
-ziti edge delete service where 'name contains "edgex." limit none'
-ziti edge delete config where 'name contains "edgex." limit none'
+function cleanupEdgexConfiguration {
+  echo "CLEANUP: removing any previous configuration"
+  ziti edge delete service where 'name contains "edgex." and name not contains "token-provider" limit none'
+  ziti edge delete config where 'name contains "edgex." and name not contains "token-provider" limit none'
+  ziti edge delete service-policy where 'name contains "edgex." and name not contains "token-provider" limit none'
+  ziti edge delete identity where 'name contains "edgex." and type != "Router" limit none'
+  ziti edge delete auth-policy where 'name contains "token-provider" limit none'
+  ziti edge delete ext-jwt-signer where 'name contains "token-provider" limit none'
+  
+  ziti edge delete identity where 'name contains "edgex-healthcheck" limit none'
+  ziti edge delete service-policy where 'name contains "edgex-healthcheck" limit none'
+  ziti edge delete service where 'name contains "edgex-healthcheck" limit none'
+  ziti edge delete config where 'name contains "edgex-healthcheck" limit none'
+  
+  ziti edge delete auth-policy where 'name contains "'"${auth_policy_name}"'" limit none'
+  ziti edge delete ext-jwt-signer where 'name contains "'"${ext_signer_name}"'" limit none'
+}
 
-ziti edge delete identity where 'name contains "edgex-healthcheck" limit none'
-ziti edge delete service-policy where 'name contains "edgex-healthcheck" limit none'
-ziti edge delete service where 'name contains "edgex-healthcheck" limit none'
-ziti edge delete config where 'name contains "edgex-healthcheck" limit none'
-
-ziti edge delete auth-policy where 'name contains "'"${auth_policy_name}"'" limit none'
-ziti edge delete ext-jwt-signer where 'name contains "'"${ext_signer_name}"'" limit none'
+cleanupEdgexConfiguration
 
 ext_jwt_id=$(ziti edge create ext-jwt-signer "${ext_signer_name}" "$iss" -u "$jwks" -a "$aud" -c "$claim")
 
@@ -93,27 +99,31 @@ makeSupportService 'rules-engine'
 makeSupportService 'support-notifications'
 makeSupportService 'support-scheduler'
 
-makeDeviceService 'device-bacnet-ip'
-makeDeviceService 'device-coap'
-makeDeviceService 'device-gpio'
-makeDeviceService 'device-modbus'
-makeDeviceService 'device-mqtt'
-makeDeviceService 'device-onvif-camera'
 makeDeviceService 'device-rest'
-makeDeviceService 'device-rfid-llrp'
-makeDeviceService 'device-snmp'
-makeDeviceService 'device-uart'
-makeDeviceService 'device-usb-camera'
 makeDeviceService 'device-virtual'
-
-makeApplicationService 'app-external-mqtt-trigger'
-makeApplicationService 'app-http-export'
-makeApplicationService 'app-metrics-influxdb'
-makeApplicationService 'app-mqtt-export'
-makeApplicationService 'app-rfid-llrp-inventory'
 makeApplicationService 'app-rules-engine'
-makeApplicationService 'app-record-replay'
-makeApplicationService 'app-sample'
+
+#makeDeviceService 'device-bacnet-ip'
+#makeDeviceService 'device-coap'
+#makeDeviceService 'device-gpio'
+#makeDeviceService 'device-modbus'
+#makeDeviceService 'device-mqtt'
+#makeDeviceService 'device-onvif-camera'
+#makeDeviceService 'device-rest'
+#makeDeviceService 'device-rfid-llrp'
+#makeDeviceService 'device-snmp'
+#makeDeviceService 'device-uart'
+#makeDeviceService 'device-usb-camera'
+#makeDeviceService 'device-virtual'
+#
+#makeApplicationService 'app-external-mqtt-trigger'
+#makeApplicationService 'app-http-export'
+#makeApplicationService 'app-metrics-influxdb'
+#makeApplicationService 'app-mqtt-export'
+#makeApplicationService 'app-rfid-llrp-inventory'
+#makeApplicationService 'app-rules-engine'
+#makeApplicationService 'app-record-replay'
+#makeApplicationService 'app-sample'
   
 ziti edge create service-policy edgex.core.id.dial Dial --identity-roles "#core.id" --service-roles "#core.svc" --semantic "AnyOf"
 ziti edge create service-policy edgex.support.id.dial Dial --identity-roles "#support.id" --service-roles "#core.svc" --semantic "AnyOf"

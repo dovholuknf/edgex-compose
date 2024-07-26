@@ -27,229 +27,229 @@
 # Generated with: Docker Compose version v2.25.0
 name: edgex
 services:
-#  app-rules-engine:
-#    env_file:
-#      - .env
-#    command:
-#      - /app-service-configurable
-#      - -cp=consul.http://edgex-core-consul:8500
-#      - --registry
-#    container_name: edgex-app-rules-engine
-##    depends_on:
-##      consul:
-##        condition: service_started
-##        required: true
-##      core-common-config-bootstrapper:
-##        condition: service_started
-##        required: true
-##      core-metadata:
-##        condition: service_started
-##        required: true
-##      security-bootstrapper:
-##        condition: service_started
-##        required: true
-#    entrypoint:
-#      - /edgex-init/ready_to_run_wait_install.sh
-#    environment:
-#      EDGEX_PROFILE: rules-engine
-#      EDGEX_SECURITY_SECRET_STORE: "true"
-#      PROXY_SETUP_HOST: edgex-security-proxy-setup
-#      SECRETSTORE_HOST: edgex-vault
-#      SERVICE_HOST: app-rules-engine.edgex.ziti
-#      SERVICE_PORT: "80"
-#      STAGEGATE_BOOTSTRAPPER_HOST: edgex-security-bootstrapper
-#      STAGEGATE_BOOTSTRAPPER_STARTPORT: "54321"
-#      STAGEGATE_DATABASE_HOST: edgex-redis
-#      STAGEGATE_DATABASE_PORT: "6379"
-#      STAGEGATE_DATABASE_READYPORT: "6379"
-#      STAGEGATE_PROXYSETUP_READYPORT: "54325"
-#      STAGEGATE_READY_TORUNPORT: "54329"
-#      STAGEGATE_REGISTRY_HOST: edgex-core-consul
-#      STAGEGATE_REGISTRY_PORT: "8500"
-#      STAGEGATE_REGISTRY_READYPORT: "54324"
-#      STAGEGATE_SECRETSTORESETUP_HOST: edgex-security-secretstore-setup
-#      STAGEGATE_SECRETSTORESETUP_TOKENS_READYPORT: "54322"
-#      STAGEGATE_WAITFOR_TIMEOUT: 60s
-#    hostname: edgex-app-rules-engine
-##    image: nexus3.edgexfoundry.org:10004/app-service-configurable:latest
-#    image: edgexfoundry/app-service-configurable:0.0.0-dev
-#    networks:
-#      edgex-network: null
-#    read_only: true
-#    restart: always
-#    security_opt:
-#      - no-new-privileges:true
-#    user: 2002:2001
-#    volumes:
-#      - type: bind
-#        source: /etc/localtime
-#        target: /etc/localtime
-#        read_only: true
-#        bind:
-#          create_host_path: true
-#      - type: volume
-#        source: edgex-init
-#        target: /edgex-init
-#        read_only: true
-#        volume: {}
-#      - type: bind
-#        source: /tmp/edgex/secrets/app-rules-engine
-#        target: /tmp/edgex/secrets/app-rules-engine
-#        read_only: true
-#        bind:
-#          selinux: z
-#          create_host_path: true
-#
-#
-#
-#  device-rest:
-#    env_file:
-#      - .env
-#    command:
-#      - /device-rest
-#      - -cp=consul.http://edgex-core-consul:8500
-#      - --registry
-#    container_name: edgex-device-rest
+  app-rules-engine:
+    env_file:
+      - .env
+    command:
+      - /app-service-configurable
+      - -cp=consul.http://edgex-core-consul:8500
+      - --registry
+    container_name: edgex-app-rules-engine
 #    depends_on:
-#      #      consul:
-#      #        condition: service_started
-#      #        required: true
-#      #      core-common-config-bootstrapper:
-#      #        condition: service_started
-#      #        required: true
-#      core-data:
+#      consul:
+#        condition: service_started
+#        required: true
+#      core-common-config-bootstrapper:
 #        condition: service_started
 #        required: true
 #      core-metadata:
 #        condition: service_started
 #        required: true
-#    #      security-bootstrapper:
-#    #        condition: service_started
-#    #        required: true
-#    entrypoint:
-#      - /edgex-init/ready_to_run_wait_install.sh
-#    environment:
-#      EDGEX_SECURITY_SECRET_STORE: "true"
-#      PROXY_SETUP_HOST: edgex-security-proxy-setup
-#      SECRETSTORE_HOST: edgex-vault
-#      SERVICE_HOST: device-rest.edgex.ziti
-#      SERVICE_PORT: "80"
-#      STAGEGATE_BOOTSTRAPPER_HOST: edgex-security-bootstrapper
-#      STAGEGATE_BOOTSTRAPPER_STARTPORT: "54321"
-#      STAGEGATE_DATABASE_HOST: edgex-redis
-#      STAGEGATE_DATABASE_PORT: "6379"
-#      STAGEGATE_DATABASE_READYPORT: "6379"
-#      STAGEGATE_PROXYSETUP_READYPORT: "54325"
-#      STAGEGATE_READY_TORUNPORT: "54329"
-#      STAGEGATE_REGISTRY_HOST: edgex-core-consul
-#      STAGEGATE_REGISTRY_PORT: "8500"
-#      STAGEGATE_REGISTRY_READYPORT: "54324"
-#      STAGEGATE_SECRETSTORESETUP_HOST: edgex-security-secretstore-setup
-#      STAGEGATE_SECRETSTORESETUP_TOKENS_READYPORT: "54322"
-#      STAGEGATE_WAITFOR_TIMEOUT: 60s
-#    hostname: edgex-device-rest
-##    image: nexus3.edgexfoundry.org:10004/device-rest:latest
+#      security-bootstrapper:
+#        condition: service_started
+#        required: true
+    entrypoint:
+      - /edgex-init/ready_to_run_wait_install.sh
+    environment:
+      EDGEX_PROFILE: rules-engine
+      EDGEX_SECURITY_SECRET_STORE: "true"
+      PROXY_SETUP_HOST: edgex-security-proxy-setup
+      SECRETSTORE_HOST: edgex-vault
+      SERVICE_HOST: app-rules-engine.edgex.ziti
+      SERVICE_PORT: "80"
+      STAGEGATE_BOOTSTRAPPER_HOST: edgex-security-bootstrapper
+      STAGEGATE_BOOTSTRAPPER_STARTPORT: "54321"
+      STAGEGATE_DATABASE_HOST: edgex-redis
+      STAGEGATE_DATABASE_PORT: "6379"
+      STAGEGATE_DATABASE_READYPORT: "6379"
+      STAGEGATE_PROXYSETUP_READYPORT: "54325"
+      STAGEGATE_READY_TORUNPORT: "54329"
+      STAGEGATE_REGISTRY_HOST: edgex-core-consul
+      STAGEGATE_REGISTRY_PORT: "8500"
+      STAGEGATE_REGISTRY_READYPORT: "54324"
+      STAGEGATE_SECRETSTORESETUP_HOST: edgex-security-secretstore-setup
+      STAGEGATE_SECRETSTORESETUP_TOKENS_READYPORT: "54322"
+      STAGEGATE_WAITFOR_TIMEOUT: 60s
+    hostname: edgex-app-rules-engine
+#    image: nexus3.edgexfoundry.org:10004/app-service-configurable:latest
+    image: edgexfoundry/app-service-configurable:0.0.0-dev
+    networks:
+      edgex-network: null
+    read_only: true
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    user: 2002:2001
+    volumes:
+      - type: bind
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: volume
+        source: edgex-init
+        target: /edgex-init
+        read_only: true
+        volume: {}
+      - type: bind
+        source: /tmp/edgex/secrets/app-rules-engine
+        target: /tmp/edgex/secrets/app-rules-engine
+        read_only: true
+        bind:
+          selinux: z
+          create_host_path: true
+
+
+
+  device-rest:
+    env_file:
+      - .env
+    command:
+      - /device-rest
+      - -cp=consul.http://edgex-core-consul:8500
+      - --registry
+    container_name: edgex-device-rest
+    depends_on:
+      #      consul:
+      #        condition: service_started
+      #        required: true
+      #      core-common-config-bootstrapper:
+      #        condition: service_started
+      #        required: true
+      core-data:
+        condition: service_started
+        required: true
+      core-metadata:
+        condition: service_started
+        required: true
+    #      security-bootstrapper:
+    #        condition: service_started
+    #        required: true
+    entrypoint:
+      - /edgex-init/ready_to_run_wait_install.sh
+    environment:
+      EDGEX_SECURITY_SECRET_STORE: "true"
+      PROXY_SETUP_HOST: edgex-security-proxy-setup
+      SECRETSTORE_HOST: edgex-vault
+      SERVICE_HOST: device-rest.edgex.ziti
+      SERVICE_PORT: "80"
+      STAGEGATE_BOOTSTRAPPER_HOST: edgex-security-bootstrapper
+      STAGEGATE_BOOTSTRAPPER_STARTPORT: "54321"
+      STAGEGATE_DATABASE_HOST: edgex-redis
+      STAGEGATE_DATABASE_PORT: "6379"
+      STAGEGATE_DATABASE_READYPORT: "6379"
+      STAGEGATE_PROXYSETUP_READYPORT: "54325"
+      STAGEGATE_READY_TORUNPORT: "54329"
+      STAGEGATE_REGISTRY_HOST: edgex-core-consul
+      STAGEGATE_REGISTRY_PORT: "8500"
+      STAGEGATE_REGISTRY_READYPORT: "54324"
+      STAGEGATE_SECRETSTORESETUP_HOST: edgex-security-secretstore-setup
+      STAGEGATE_SECRETSTORESETUP_TOKENS_READYPORT: "54322"
+      STAGEGATE_WAITFOR_TIMEOUT: 60s
+    hostname: edgex-device-rest
+    image: nexus3.edgexfoundry.org:10004/device-rest:latest
 #    image: edgexfoundry/device-rest:0.0.0-dev
-#    networks:
-#      edgex-network: null
-#    read_only: true
-#    restart: always
-#    security_opt:
-#      - no-new-privileges:true
-#    user: 2002:2001
-#    volumes:
-#      - type: bind
-#        source: /etc/localtime
-#        target: /etc/localtime
-#        read_only: true
-#        bind:
-#          create_host_path: true
-#      - type: volume
-#        source: edgex-init
-#        target: /edgex-init
-#        read_only: true
-#        volume: {}
-#      - type: bind
-#        source: /tmp/edgex/secrets/device-rest
-#        target: /tmp/edgex/secrets/device-rest
-#        read_only: true
-#        bind:
-#          selinux: z
-#          create_host_path: true
-#  device-virtual:
-#    env_file:
-#      - .env
-#    command:
-#      - /device-virtual
-#      - -cp=consul.http://edgex-core-consul:8500
-#      - --registry
-#    container_name: edgex-device-virtual
-#    depends_on:
-#      #      consul:
-#      #        condition: service_started
-#      #        required: true
-#      #      core-common-config-bootstrapper:
-#      #        condition: service_started
-#      #        required: true
-#      core-data:
-#        condition: service_started
-#        required: true
-#      core-metadata:
-#        condition: service_started
-#        required: true
-#    #      security-bootstrapper:
-#    #        condition: service_started
-#    #        required: true
-#    entrypoint:
-#      - /edgex-init/ready_to_run_wait_install.sh
-#    environment:
-#      EDGEX_SECURITY_SECRET_STORE: "true"
-#      PROXY_SETUP_HOST: edgex-security-proxy-setup
-#      SECRETSTORE_HOST: edgex-vault
-#      SERVICE_HOST: device-virtual.edgex.ziti
-#      SERVICE_PORT: "80"
-#      STAGEGATE_BOOTSTRAPPER_HOST: edgex-security-bootstrapper
-#      STAGEGATE_BOOTSTRAPPER_STARTPORT: "54321"
-#      STAGEGATE_DATABASE_HOST: edgex-redis
-#      STAGEGATE_DATABASE_PORT: "6379"
-#      STAGEGATE_DATABASE_READYPORT: "6379"
-#      STAGEGATE_PROXYSETUP_READYPORT: "54325"
-#      STAGEGATE_READY_TORUNPORT: "54329"
-#      STAGEGATE_REGISTRY_HOST: edgex-core-consul
-#      STAGEGATE_REGISTRY_PORT: "8500"
-#      STAGEGATE_REGISTRY_READYPORT: "54324"
-#      STAGEGATE_SECRETSTORESETUP_HOST: edgex-security-secretstore-setup
-#      STAGEGATE_SECRETSTORESETUP_TOKENS_READYPORT: "54322"
-#      STAGEGATE_WAITFOR_TIMEOUT: 60s
-#    hostname: edgex-device-virtual
-##    image: nexus3.edgexfoundry.org:10004/device-virtual:latest
+    networks:
+      edgex-network: null
+    read_only: true
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    user: 2002:2001
+    volumes:
+      - type: bind
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: volume
+        source: edgex-init
+        target: /edgex-init
+        read_only: true
+        volume: {}
+      - type: bind
+        source: /tmp/edgex/secrets/device-rest
+        target: /tmp/edgex/secrets/device-rest
+        read_only: true
+        bind:
+          selinux: z
+          create_host_path: true
+  device-virtual:
+    env_file:
+      - .env
+    command:
+      - /device-virtual
+      - -cp=consul.http://edgex-core-consul:8500
+      - --registry
+    container_name: edgex-device-virtual
+    depends_on:
+      #      consul:
+      #        condition: service_started
+      #        required: true
+      #      core-common-config-bootstrapper:
+      #        condition: service_started
+      #        required: true
+      core-data:
+        condition: service_started
+        required: true
+      core-metadata:
+        condition: service_started
+        required: true
+    #      security-bootstrapper:
+    #        condition: service_started
+    #        required: true
+    entrypoint:
+      - /edgex-init/ready_to_run_wait_install.sh
+    environment:
+      EDGEX_SECURITY_SECRET_STORE: "true"
+      PROXY_SETUP_HOST: edgex-security-proxy-setup
+      SECRETSTORE_HOST: edgex-vault
+      SERVICE_HOST: device-virtual.edgex.ziti
+      SERVICE_PORT: "80"
+      STAGEGATE_BOOTSTRAPPER_HOST: edgex-security-bootstrapper
+      STAGEGATE_BOOTSTRAPPER_STARTPORT: "54321"
+      STAGEGATE_DATABASE_HOST: edgex-redis
+      STAGEGATE_DATABASE_PORT: "6379"
+      STAGEGATE_DATABASE_READYPORT: "6379"
+      STAGEGATE_PROXYSETUP_READYPORT: "54325"
+      STAGEGATE_READY_TORUNPORT: "54329"
+      STAGEGATE_REGISTRY_HOST: edgex-core-consul
+      STAGEGATE_REGISTRY_PORT: "8500"
+      STAGEGATE_REGISTRY_READYPORT: "54324"
+      STAGEGATE_SECRETSTORESETUP_HOST: edgex-security-secretstore-setup
+      STAGEGATE_SECRETSTORESETUP_TOKENS_READYPORT: "54322"
+      STAGEGATE_WAITFOR_TIMEOUT: 60s
+    hostname: edgex-device-virtual
+    image: nexus3.edgexfoundry.org:10004/device-virtual:latest
 #    image: edgexfoundry/device-virtual:0.0.0-dev
-#    networks:
-#      edgex-network: null
-#    read_only: true
-#    restart: always
-#    security_opt:
-#      - no-new-privileges:true
-#    user: 2002:2001
-#    volumes:
-#      - type: bind
-#        source: /etc/localtime
-#        target: /etc/localtime
-#        read_only: true
-#        bind:
-#          create_host_path: true
-#      - type: volume
-#        source: edgex-init
-#        target: /edgex-init
-#        read_only: true
-#        volume: {}
-#      - type: bind
-#        source: /tmp/edgex/secrets/device-virtual
-#        target: /tmp/edgex/secrets/device-virtual
-#        read_only: true
-#        bind:
-#          selinux: z
-#          create_host_path: true
+    networks:
+      edgex-network: null
+    read_only: true
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    user: 2002:2001
+    volumes:
+      - type: bind
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+        bind:
+          create_host_path: true
+      - type: volume
+        source: edgex-init
+        target: /edgex-init
+        read_only: true
+        volume: {}
+      - type: bind
+        source: /tmp/edgex/secrets/device-virtual
+        target: /tmp/edgex/secrets/device-virtual
+        read_only: true
+        bind:
+          selinux: z
+          create_host_path: true
 
 
 
