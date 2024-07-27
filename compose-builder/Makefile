@@ -27,6 +27,7 @@ include common-security.env
 DOCKER_COMPOSE?=docker compose
 GEN_COMMAND=convert
 
+DEPENDENCY_FILES:=-f docker-compose-deps.yml
 COMPOSE_FILES:=-f docker-compose-base.yml
 TOKEN_LIST=
 KNOWN_SECRETS_LIST=redisdb[app-rules-engine]
@@ -1066,6 +1067,9 @@ portainer-down:
 	make -C ${RELEASE_FOLDER} portainer-down
 
 build: build-canned build-taf
+
+build-deps:
+	
 
 build-canned:
 	make compose ds-rest ds-virtual

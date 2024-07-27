@@ -15,8 +15,6 @@
 
 # NOTE:  this Docker Compose file does not contain the security services required to run in secure mode
 
-version: '3.7'
-
 networks:
   edgex-network:
     driver: "bridge"
