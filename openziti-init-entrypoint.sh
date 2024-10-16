@@ -1,24 +1,49 @@
 #!/usr/bin/env bash
-if [ -e "${OPENZITI_PERSISTENCE_PATH}/healthcheck.json" ]; then
-    echo "${OPENZITI_PERSISTENCE_PATH}/healthcheck.json exists. already initialized."
-    exit 0
-fi
- 
 
 # should be user settable through docker-compose/env/env vars
 openziti_server_and_port="${OPENZITI_ADVERTISED_ADDRESS}:${OPENZITI_ADVERTISED_PORT}"
 
 # expected to not change
-oidc_server="vault:8200"
-ext_signer_name="vault.clients"
-auth_policy_name="${ext_signer_name}.auth.policy"
+ext_signer_name="edgex.token-provider.ext-jwt-signer"
+auth_policy_name="edgex.token-provider.auth.policy"
 iss="/v1/identity/oidc"
-jwks="http://vault:8200/v1/identity/oidc/.well-known/keys"
+jwks="${OPENZITI_OIDC_URL}/v1/identity/oidc/.well-known/keys"
 aud="edgex"
 claim="name"
 
-while [[ "$(curl -w "%{http_code}" -m 1 -s -k -o /dev/null https://${openziti_server_and_port}/version)" != "200" ]]; do echo "waiting for https://${openziti_server_and_port}"; sleep 3; done; echo "controller online"
-ziti edge login ${openziti_server_and_port} -u $ZITI_USER -p $ZITI_PWD -y
+function cleanupEdgexConfiguration {
+  echo "CLEANUP: removing any previous configuration"
+  ziti edge delete service where 'name contains "edgex." and name not contains "token-provider" limit none'
+  ziti edge delete config where 'name contains "edgex." and name not contains "token-provider" limit none'
+  ziti edge delete service-policy where 'name contains "edgex." and name not contains "token-provider" limit none'
+  ziti edge delete identity where 'name contains "edgex." and not type = "Router" limit none'
+  ziti edge delete auth-policy where 'name contains "edgex." limit none'
+  ziti edge delete ext-jwt-signer where 'name contains "edgex." limit none'
+  
+  ziti edge delete identity where 'name contains "edgex.healthcheck" limit none'
+  ziti edge delete service-policy where 'name contains "edgex.healthcheck" limit none'
+  ziti edge delete service where 'name contains "edgex.healthcheck" limit none'
+  ziti edge delete config where 'name contains "edgex.healthcheck" limit none'
+  
+  rm /edgex_openziti/healthcheck.json
+}
+
+function doOpenZitiLogin {
+    while [[ "$(curl -w "%{http_code}" -m 1 -s -k -o /dev/null https://${openziti_server_and_port}/version)" != "200" ]]; do echo "waiting for https://${openziti_server_and_port}"; sleep 3; done; echo "controller online"
+    ziti edge login ${openziti_server_and_port} -u $ZITI_USER -p $ZITI_PWD -y
+}
+
+if [ "${OPENZITI_EDGEX_CLEANUP}" = "true" ]; then
+    doOpenZitiLogin
+    cleanupEdgexConfiguration
+else
+    if [ -e "${OPENZITI_PERSISTENCE_PATH}/healthcheck.json" ]; then
+        echo "${OPENZITI_PERSISTENCE_PATH}/healthcheck.json exists. already initialized."
+        exit 0
+    fi
+    doOpenZitiLogin
+fi
+
 
 ext_jwt_id=$(ziti edge create ext-jwt-signer "${ext_signer_name}" $iss -u $jwks -a $aud -c $claim)
 
@@ -83,28 +108,27 @@ makeApplicationService 'app-rules-engine'
 makeApplicationService 'app-record-replay'
 makeApplicationService 'app-sample'
   
-ziti edge create service-policy app-core-dial Dial --identity-roles "#application.id" --service-roles "#core.svc"
-ziti edge create service-policy app-support-dial Dial --identity-roles "#application.id" --service-roles "#support.svc"
-ziti edge create service-policy ds-core-dial Dial --identity-roles "#device.id" --service-roles "@edgex.core-metadata"
-ziti edge create service-policy core-core-dial Dial --identity-roles "#core.id" --service-roles "#core.svc"
-ziti edge create service-policy corecmd-device-dial Dial --identity-roles "#edgex.core-command.server" --service-roles "#device.svc"
-ziti edge create service-policy support-core-dial Dial --identity-roles "#support.id" --service-roles "#core.svc"
+ziti edge create service-policy edgex.app-core-dial Dial --identity-roles "#application.id" --service-roles "#core.svc"
+ziti edge create service-policy edgex.app-support-dial Dial --identity-roles "#application.id" --service-roles "#support.svc"
+ziti edge create service-policy edgex.ds-core-dial Dial --identity-roles "#device.id" --service-roles "@edgex.core-metadata"
+ziti edge create service-policy edgex.core-core-dial Dial --identity-roles "#core.id" --service-roles "#core.svc"
+ziti edge create service-policy edgex.corecmd-device-dial Dial --identity-roles "#edgex.core-command.server" --service-roles "#device.svc"
+ziti edge create service-policy edgex.support-core-dial Dial --identity-roles "#support.id" --service-roles "#core.svc"
 
 echo " "
 echo "ext-jwt-id     : ${ext_jwt_id}"
 echo "auth policy id : ${edgex_auth_policy}"
 echo " "
 
+ziti edge create service-policy edgex.ui-support-dial Dial --identity-roles "#edgex.ui.server" --service-roles "#support.svc"
+
 echo "creating the healthcheck proxy identity"
-ziti edge create identity \
-  healthcheck -o ${OPENZITI_PERSISTENCE_PATH}/healthcheck.jwt \
+ziti edge create identity edgex.healthcheck \
+  -o "${OPENZITI_PERSISTENCE_PATH}/healthcheck.jwt" \
   -a 'healthchecker'
-ziti edge create service-policy healthcheck-core-dial Dial --identity-roles "#healthchecker" --service-roles "#core.svc"
-ziti edge create service-policy healthcheck-support-dial Dial --identity-roles "#healthchecker" --service-roles "#support.svc"
-ziti edge create service-policy healthcheck-device-dial Dial --identity-roles "#healthchecker" --service-roles "#device.svc"
-ziti edge create service-policy healthcheck-application-dial Dial --identity-roles "#healthchecker" --service-roles "#application.svc"
+ziti edge create service-policy edgex.healthcheck-core-dial Dial --identity-roles "#healthchecker" --service-roles "#core.svc"
+ziti edge create service-policy edgex.healthcheck-support-dial Dial --identity-roles "#healthchecker" --service-roles "#support.svc"
+ziti edge create service-policy edgex.healthcheck-device-dial Dial --identity-roles "#healthchecker" --service-roles "#device.svc"
+ziti edge create service-policy edgex.healthcheck-application-dial Dial --identity-roles "#healthchecker" --service-roles "#application.svc"
 
-ziti edge create service-policy ui-support-dial Dial --identity-roles "#edgex.ui.server" --service-roles "#support.svc"
-
-ziti edge enroll ${OPENZITI_PERSISTENCE_PATH}/healthcheck.jwt
-
+ziti edge enroll "${OPENZITI_PERSISTENCE_PATH}/healthcheck.jwt"

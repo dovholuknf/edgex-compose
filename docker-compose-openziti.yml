@@ -1,7 +1,7 @@
 services:
   openziti:
     container_name: edgex-openziti
-    image: openziti/ziti-cli:0.34.1
+    image: openziti/ziti-cli:1.1.8
     restart: unless-stopped
     networks:
       edgex-network:
@@ -56,6 +56,7 @@ services:
       - OPENZITI_PERSISTENCE_PATH=${OPENZITI_PERSISTENCE_PATH:-/edgex_openziti}
       - OPENZITI_ADVERTISED_ADDRESS=${OPENZITI_ADVERTISED_ADDRESS:-openziti}
       - OPENZITI_ADVERTISED_PORT=${OPENZITI_ADVERTISED_PORT:-1280}
+      - OPENZITI_OIDC_URL=http://edgex-vault:8200
     volumes:
       - edgex_openziti:/edgex_openziti
     networks:
